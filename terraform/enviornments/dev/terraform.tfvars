@@ -3,6 +3,14 @@ rg = {
   location = "Central India"
 }
 
+keyvault = {
+  key_vault_name     = "kv-dev-infra"
+  rg_name            = "rg-dev-infra"
+  location           = "Central India"
+  sku_name           = "standard"
+  key_permissions    = "Get"
+  secret_permissions = "Get"
+}
 vnet = {
   vnet_name = "vnet-dev-infra"
   address_space = ["10.0.0.0/16"]
