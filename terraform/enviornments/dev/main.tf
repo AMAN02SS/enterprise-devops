@@ -16,6 +16,8 @@ module "keyvault" {
   sku_name = each.value.sku_name
   key_permissions = each.value.key_permissions
   secret_permissions = each.value.secret_permissions
+}
+
 module "vnet" {
   source   = "../../modules/vnet"
   for_each = var.vnet
