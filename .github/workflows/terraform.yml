@@ -7,12 +7,14 @@ on:
     paths:
       - 'terraform/environments/dev/**'
       - 'terraform/modules/**'
+      - '.github/workflows/**'
   push:
     branches:
       - main
     paths:
       - 'terraform/environments/dev/**'
       - 'terraform/modules/**'
+      - '.github/workflows/**'
 
 jobs:
   terraform:
