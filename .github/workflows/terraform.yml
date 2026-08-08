@@ -14,11 +14,6 @@ on:
       - 'terraform/environments/dev/**'
       - 'terraform/modules/**'
 
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
-
 jobs:
   terraform:
     name: "Terraform Plan & Apply"
@@ -27,20 +22,28 @@ jobs:
       run:
         working-directory: ./terraform/environments/dev
 
+    # Terraform Azure Provider credentials mapping
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
     steps:
       # 1. Code checkout
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Azure OIDC Login
+      # 2. Azure Login (Client Secret se)
       - name: Azure Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 3. Terraform Setup
+      # 3. Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -54,12 +57,12 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      # 6. Terraform Plan (Pull Request par chalega)
+      # 6. Terraform Plan (Pull Request par)
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color
 
-      # 7. Terraform Apply (Main branch par merge hone par chalega)
+      # 7. Terraform Apply (Main branch merge par)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
