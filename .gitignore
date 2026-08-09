@@ -19,7 +19,7 @@ override.tf.json
 
 # Keep sample files
 !terraform.tfvars.example
-
+!terraform.tfvars
 # -----------------------------
 # Secrets
 # -----------------------------
