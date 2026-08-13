@@ -55,12 +55,20 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      # 6. Terraform Plan (Pull Request par)
+      # 6. Terraform Plan (Saves the plan output to a file)
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color
+        run: terraform plan -no-color -out=tfplan
 
-      # 7. Terraform Apply (Main branch merge par)
+      # 7. Upload Terraform Plan Artifact (Only runs during a pull request)
+      - name: Upload Terraform Plan
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: terraform/environments/dev/tfplan
+
+      # 8. Terraform Apply (Main branch merge par)
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
